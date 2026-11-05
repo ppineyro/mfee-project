@@ -1,0 +1,7 @@
+# Use this workspace to collaborate
+workspace:
+  id: 4bd7cb86-8275-41f5-83c5-9cef38d1d374
+
+localResources:
+  collections:
+    - ../apps/api/src/assets/mfee-node.postman_collection.json
