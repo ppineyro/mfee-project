@@ -16,6 +16,7 @@ app.use(helmet());
 app.use(cors(corsOptions));
 
 app.use('/api/categories', categories);
+app.use('/api/posts', posts);
 
 app.listen(port, host, () => {
   console.log(`[ ready ] http://${host}:${port}`);
