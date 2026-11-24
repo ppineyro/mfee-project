@@ -1,4 +1,4 @@
-import { getCategory } from './category';
+import Category from '../models/category';
 import { Post, Comment } from '../models/post';
 
 //init
@@ -11,9 +11,9 @@ const getPosts = (req, res) => {
 };
 
 //get by category
-const getPostsByCategory = (req, res) => {
+const getPostsByCategory = async (req, res) => {
   const { category } = req.params;
-  const categoryObj = getCategory(category);
+  const categoryObj = await Category.findById(category);
 
   if (!categoryObj) {
     return res.status(404).json({ message: 'Category not found' });
@@ -24,7 +24,7 @@ const getPostsByCategory = (req, res) => {
 };
 
 //get by id w category obj & comment objs
-const getPostById = (req, res) => {
+const getPostById = async (req, res) => {
   const { id } = req.params;
   const post = posts.find((p) => p.id === id);
 
@@ -32,21 +32,21 @@ const getPostById = (req, res) => {
     return res.status(404).json({ message: 'Post not found' });
   }
 
-  const category = getCategory(post.category);
+  const category = Category.findById(post.category);
   const postComments = post.comments.map((commentId) => comments.find((c) => c.id === commentId)).filter((c): c is Comment => Boolean(c));
 
   res.status(200).json({ ...post, category, comments: postComments });
 };
 
 //create post
-const createPost = (req, res) => {
+const createPost = async (req, res) => {
   const { title, image, description, category } = req.body;
 
   if (!title || !image || !description || !category) {
     return res.status(400).json({ message: 'All fields are required.' });
   }
 
-  const categoryObj = getCategory(category);
+  const categoryObj = await Category.findById(category);
   if (!categoryObj) {
     return res.status(404).json({ message: 'Category not found' });
   }
@@ -91,7 +91,7 @@ const createComment = (req, res) => {
 };
 
 //post update
-const updatePost = (req, res) => {
+const updatePost = async (req, res) => {
   const { id } = req.params;
   const postIndex = posts.findIndex((p) => p.id === id);
 
@@ -102,7 +102,7 @@ const updatePost = (req, res) => {
   const { title, image, description, category } = req.body;
 
   if (category) {
-    const categoryObj = getCategory(category);
+    const categoryObj = await Category.findById(category);
     if (!categoryObj) {
       return res.status(404).json({ message: 'Category not found' });
     }
